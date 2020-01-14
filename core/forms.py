@@ -1,7 +1,7 @@
 from django import forms
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
-from .models import Order
+from .models import Order, SIZE_CHOICES
 from phonenumber_field.formfields import PhoneNumberField
 
 
@@ -64,6 +64,10 @@ class PaymentForm(forms.Form):
     save = forms.BooleanField(required=False)
     use_default = forms.BooleanField(required=False)
 
+
+class OrderSizeForm(forms.Form):
+    size = forms.ChoiceField(
+        widget=forms.Select, choices=SIZE_CHOICES)
 
 class OrderCreateForm(forms.ModelForm):
     class Meta:

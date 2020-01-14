@@ -7,11 +7,10 @@ from django_countries.fields import CountryField
 
 
 CATEGORY_CHOICES = (
-    ('S', 'Shirt'),
-    ('SW', 'Sport wear'),
-    ('OW', 'Outwear'),
-    ('L', 'Land'),
-    ('HSE', 'House')
+    ('M', 'MEN'),
+    ('W', 'WOMEN'),
+    ('K/B', 'KIDS/BABY'),
+    ('D', 'DISCOVER')
 )
 
 LABEL_CHOICES = (
@@ -23,6 +22,14 @@ LABEL_CHOICES = (
 ADDRESS_CHOICES = (
     ('B', 'Billing'),
     ('S', 'Shipping'),
+)
+
+SIZE_CHOICES = (
+    ('sm', 'small'),
+    ('m', 'medium'),
+    ('l', 'large'),
+    ('xl', 'extra large'),
+    ('xxl', 'extra extra large')
 )
 
 
@@ -40,10 +47,11 @@ class Item(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=3)
     label = models.CharField(choices=LABEL_CHOICES, max_length=1)
     slug = models.SlugField()
     description = models.TextField()
+    item_size = models.CharField(choices=SIZE_CHOICES, max_length=2)
     image = models.ImageField(upload_to='items/%Y/%m/%d')
     image_1 = models.ImageField(upload_to='items/%Y/%m/%d/', blank=True)
     image_2 = models.ImageField(upload_to='items/%Y/%m/%d/', blank=True)
@@ -96,10 +104,11 @@ class Wholesaler(models.Model):
     price = models.FloatField()
     min_quantity = models.IntegerField(default=5)
     discount_price = models.FloatField(blank=True, null=True)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=3)
     label = models.CharField(choices=LABEL_CHOICES, max_length=1)
     slug = models.SlugField()
     description = models.TextField()
+    wholesaler_size = models.CharField(choices=SIZE_CHOICES, max_length=2)
     image = models.ImageField(upload_to='items/%Y/%m/%d')
     image_1 = models.ImageField(upload_to='items/%Y/%m/%d/', blank=True)
 
@@ -151,7 +160,11 @@ class Order(models.Model):
                              on_delete=models.CASCADE)
     ref_code = models.CharField(max_length=20, blank=True, null=True)
     items = models.ManyToManyField(OrderItem, blank=True)
+    item_size = models.ForeignKey(
+          'Item',  related_name='size', on_delete=models.SET_NULL, blank=True, null=True)
     wholesalers = models.ManyToManyField(OrderWholesaler, blank=True)
+    wholesaler_size = models.ForeignKey(
+       'Wholesaler',  related_name='size', on_delete=models.SET_NULL, blank=True, null=True)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
@@ -167,6 +180,7 @@ class Order(models.Model):
     received = models.BooleanField(default=False)
     refund_requested = models.BooleanField(default=False)
     refund_granted = models.BooleanField(default=False)
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=3, default=False)
 
     '''
     1. Item added to cart

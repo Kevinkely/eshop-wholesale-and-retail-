@@ -49,6 +49,20 @@
 
             <p>{{ object.description }}</p>
 
+            <div class="form-group">
+              <label for="color" class="control-label col-md-2 text-left">
+                  Size </label>
+                  <div class="col-md-4">
+                   <select name="size" class="form-control input-sm">
+                      <option value=small>sm</option>
+                      <option value="medium">m</option>
+                      <option value="large">l</option>
+                      <option value="extra-large">xl</option>
+                      <option value="extra-extra-large">xxl</option>
+                   </select>
+                  </div>
+            </div>
+
             {% comment %} <form class="d-flex justify-content-left">
               <!-- Default input -->
               <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px">
